@@ -23,14 +23,25 @@ public class LonelyTwitterActivity extends Activity {
 	private static final String FILENAME = "file.sav";
 	private EditText bodyText;
 	private ListView oldTweetsList;
-	
+	private EditText myMood;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		SadTweet tweet1 = new SadTweet("blah");
+		HappyTweet tweet2 = new HappyTweet("blahblah");
+
+		/*try {
+			tweet.setText("");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}*/
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
 		bodyText = (EditText) findViewById(R.id.body);
+		myMood = (EditText) findViewById(R.id.myMood);
 		Button saveButton = (Button) findViewById(R.id.save);
 		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList);
 
@@ -39,9 +50,9 @@ public class LonelyTwitterActivity extends Activity {
 			public void onClick(View v) {
 				setResult(RESULT_OK);
 				String text = bodyText.getText().toString();
-				saveInFile(text, new Date(System.currentTimeMillis()));
+				String text2 = myMood.getText().toString();
+				saveInFile(text, text2, new Date(System.currentTimeMillis()));
 				finish();
-
 			}
 		});
 	}
@@ -51,6 +62,7 @@ public class LonelyTwitterActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onStart();
 		String[] tweets = loadFromFile();
+
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				R.layout.list_item, tweets);
 		oldTweetsList.setAdapter(adapter);
@@ -77,11 +89,11 @@ public class LonelyTwitterActivity extends Activity {
 		return tweets.toArray(new String[tweets.size()]);
 	}
 	
-	private void saveInFile(String text, Date date) {
+	private void saveInFile(String text, String text2, Date date) {
 		try {
 			FileOutputStream fos = openFileOutput(FILENAME,
 					Context.MODE_APPEND);
-			fos.write(new String(date.toString() + " | " + text)
+			fos.write(new String(date.toString() + " | " + text + " | " + text2)
 					.getBytes());
 			fos.close();
 		} catch (FileNotFoundException e) {
