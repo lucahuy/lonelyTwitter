@@ -9,13 +9,16 @@ import java.util.Set;
 /**
  * Created by hbtruong on 9/29/15.
  */
-public class TweetList {
+// want to make observable
+public class TweetList implements MyObservable, MyObserver {
     private Tweet mostRecentTweet;
     private ArrayList<Tweet> tweets = new ArrayList<Tweet>();
 
     public void add(Tweet tweet) {
         mostRecentTweet = tweet;
         tweets.add(tweet);
+        tweet.addObserver(this);
+        notifyAllObservers();
     }
 
     public Tweet getMostRecentTweet() {
@@ -58,5 +61,23 @@ public class TweetList {
         }
 
         return false;
+    }
+
+    private volatile ArrayList<MyObserver> observers = new ArrayList<MyObserver>();
+
+    // in interface
+    public void addObserver(MyObserver observer) {
+        observers.add(observer);
+    }
+
+    private void notifyAllObservers() {
+        for (MyObserver observer : observers) {
+            observer.myNotify(this);
+        }
+    }
+
+    // in interface
+    public void myNotify(MyObservable observable) {
+        notifyAllObservers();
     }
 }

@@ -37,45 +37,32 @@ public class LonelyTwitterActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		super.onCreate(savedInstanceState); // view
+		setContentView(R.layout.main); // view
 
-		bodyText = (EditText) findViewById(R.id.body);
-		Button saveButton = (Button) findViewById(R.id.save);
-		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList);
+		bodyText = (EditText) findViewById(R.id.body); // view
+		Button saveButton = (Button) findViewById(R.id.save); // view
+		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList); // view
 
 		saveButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
 				setResult(RESULT_OK);
-				String text = bodyText.getText().toString();
-				tweets.add(new NormalTweet(text));
-				saveInFile();
-				adapter.notifyDataSetChanged();
+				String text = bodyText.getText().toString(); // controller
+				tweets.add(new NormalTweet(text)); // controller
+				saveInFile(); // model
+				adapter.notifyDataSetChanged(); // controller
 			}
 		});
 
-		Button clearButton = (Button) findViewById(R.id.clear);
+		Button clearButton = (Button) findViewById(R.id.clear); // view
 		clearButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				tweets = new ArrayList<Tweet>();
-				adapter = new ArrayAdapter<Tweet>(LonelyTwitterActivity.this, R.layout.list_item, tweets);
-				oldTweetsList.setAdapter(adapter);
-				adapter.notifyDataSetChanged();
-
-				try {
-					FileOutputStream fos = openFileOutput(FILENAME,
-							0);
-					OutputStreamWriter writer = new OutputStreamWriter(fos);
-					Gson gson = new Gson();
-					gson.toJson(tweets, writer);
-					writer.flush();
-					fos.close();
-				} catch (FileNotFoundException e) {
-					throw new RuntimeException(e);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				tweets = new ArrayList<Tweet>(); // controller
+				adapter = new ArrayAdapter<Tweet>(LonelyTwitterActivity.this, R.layout.list_item, tweets); // controller
+				oldTweetsList.setAdapter(adapter); // controller
+				adapter.notifyDataSetChanged(); // controller
+				saveInFile(); // model
 			}
 		});
 	}
@@ -85,13 +72,13 @@ public class LonelyTwitterActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		tweets = new ArrayList<Tweet>();
-		loadFromFile();
+		tweets = new ArrayList<Tweet>(); // controller
+		loadFromFile(); // controller
 		if (tweets == null) {
 			throw new RuntimeException();
 		}
-		adapter = new ArrayAdapter<Tweet>(this, R.layout.list_item, tweets);
-		oldTweetsList.setAdapter(adapter);
+		adapter = new ArrayAdapter<Tweet>(this, R.layout.list_item, tweets); // controller
+		oldTweetsList.setAdapter(adapter); // controller
 	}
 
 	private void loadFromFile() {

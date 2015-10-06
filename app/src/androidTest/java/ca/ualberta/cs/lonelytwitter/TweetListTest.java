@@ -2,15 +2,10 @@ package ca.ualberta.cs.lonelytwitter;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import junit.framework.TestCase;
-
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Created by hbtruong on 9/29/15.
  */
-public class TweetListTest extends ActivityInstrumentationTestCase2 {
+public class TweetListTest extends ActivityInstrumentationTestCase2 implements MyObserver{
     public TweetListTest() {
         super(ca.ualberta.cs.lonelytwitter.LonelyTwitterActivity.class);
     }
@@ -54,5 +49,34 @@ public class TweetListTest extends ActivityInstrumentationTestCase2 {
         list.addTweet(tweet);
         list.addTweet(new NormalTweet("test2"));
         System.out.println("check equal: " + list.hasTweet(tweet));
+    }
+
+    private Boolean weWereNotified;
+
+    public void myNotify(MyObservable observable) {
+        weWereNotified = Boolean.TRUE;
+    }
+
+    public void testObservable() {
+        TweetList list = new TweetList();
+        // needs an addObserver
+        list.addObserver(this);
+        Tweet tweet = new NormalTweet("test"); //
+        weWereNotified = Boolean.FALSE;
+        list.add(tweet);
+        // we should have been notified here
+        assertTrue(weWereNotified);
+    }
+
+    public void testModifyTweetInList() {
+        TweetList list = new TweetList();
+        // needs an addObserver
+        list.addObserver(this);
+        Tweet tweet = new NormalTweet("test");
+        weWereNotified = Boolean.FALSE;
+        tweet.setText("test");
+        list.add(tweet);
+        // we should have been notified here
+        assertTrue(weWereNotified);
     }
 }
