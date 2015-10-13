@@ -14,8 +14,10 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +33,39 @@ public class LonelyTwitterActivity extends Activity {
 	private ListView oldTweetsList;
 	private ArrayList<Tweet> tweets;
 	private ArrayAdapter<Tweet> adapter;
+	private Button saveButton;
 
+	public EditText getBodyText() {
+		return bodyText;
+	}
+
+	public void setBodyText(EditText bodyText) {
+		this.bodyText = bodyText;
+	}
+
+	public Button getSaveButton() {
+		return saveButton;
+	}
+
+	public void setSaveButton(Button saveButton) {
+		this.saveButton = saveButton;
+	}
+
+	public ListView getOldTweetsList() {
+		return oldTweetsList;
+	}
+
+	public void setOldTweetsList(ListView oldTweetsList) {
+		this.oldTweetsList = oldTweetsList;
+	}
+
+	public ArrayList<Tweet> getTweets() {
+		return tweets;
+	}
+
+	public void setTweets(ArrayList<Tweet> tweets) {
+		this.tweets = tweets;
+	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -41,7 +75,7 @@ public class LonelyTwitterActivity extends Activity {
 		setContentView(R.layout.main); // view
 
 		bodyText = (EditText) findViewById(R.id.body); // view
-		Button saveButton = (Button) findViewById(R.id.save); // view
+		saveButton = (Button) findViewById(R.id.save); // view
 		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList); // view
 
 		saveButton.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +86,13 @@ public class LonelyTwitterActivity extends Activity {
 				tweets.add(new NormalTweet(text)); // controller
 				saveInFile(); // model
 				adapter.notifyDataSetChanged(); // controller
+			}
+		});
+
+		oldTweetsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Intent intent = new Intent(LonelyTwitterActivity.this, EditTweetActivity.class);
+				startActivity(intent);
 			}
 		});
 
@@ -81,7 +122,7 @@ public class LonelyTwitterActivity extends Activity {
 		oldTweetsList.setAdapter(adapter); // controller
 	}
 
-	private void loadFromFile() {
+	public void loadFromFile() {
 		try {
 			FileInputStream fis = openFileInput(FILENAME);
 			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
@@ -97,7 +138,7 @@ public class LonelyTwitterActivity extends Activity {
 		}
 	}
 	
-	private void saveInFile() {
+	public void saveInFile() {
 		try {
 			FileOutputStream fos = openFileOutput(FILENAME,
 					0);
